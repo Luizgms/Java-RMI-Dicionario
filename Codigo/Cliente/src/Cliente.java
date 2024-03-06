@@ -1,35 +1,53 @@
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.Scanner;
 
-public class App {
-
-    private static Dicionario dicionario;
+public class Cliente {
 
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
-        dicionario = new Dicionario();
+        String servidor = "rmi://localhost/";
+        String nome = "DicionarioService";
 
-        // Menu principal
-        while (true) {
-            int opcao = menu();
+        try {
+            Dicionario dicionario = (Dicionario) Naming.lookup(servidor + nome);
+            System.out.println("Objeto remoto \'" + nome + "\' encontrado no servidor.");
 
-            switch (opcao) {
-                case 1:
-                    buscarPalavra();
-                    break;
-                case 2:
-                    adicionarPalavra();
-                    break;
-                case 3:
-                    removerPalavra();
-                    break;
-                case 4:
-                    System.out.println("Saindo...");
-                    return;
-                default:
-                    System.out.println("Opção inválida!");
+            while (true) {
+                int opcao = menu();
+
+                switch (opcao) {
+                    case 1:
+                        buscarPalavra(dicionario);
+                        break;
+                    case 2:
+                        adicionarPalavra(dicionario);
+                        break;
+                    case 3:
+                        removerPalavra(dicionario);
+                        break;
+                    case 4:
+                        System.out.println("Saindo...");
+                        return;
+                    default:
+                        System.out.println("Opção inválida!");
+                }
             }
+        } catch (MalformedURLException e) {
+            System.out.println("URL \'" + servidor + nome + "\' mal formatada.");
+        } catch (RemoteException e) {
+            System.out.println("Erro na invocacaçãoo remota.");
+            e.printStackTrace();
+        } catch (NotBoundException e) {
+            System.out.println("Objeto remoto \'" + nome + "\' n�o est� dispon�vel.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     private static int menu() {
@@ -43,7 +61,7 @@ public class App {
         return scanner.nextInt();
     }
 
-    private static void buscarPalavra() {
+    private static void buscarPalavra(Dicionario dicionario) throws RemoteException {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Digite a palavra que deseja buscar: ");
         String palavra = scanner.nextLine();
@@ -56,7 +74,7 @@ public class App {
         }
     }
 
-    private static void adicionarPalavra() throws IOException {
+    private static void adicionarPalavra(Dicionario dicionario) throws IOException {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Digite a palavra que deseja adicionar: ");
         String palavra = scanner.nextLine();
@@ -71,7 +89,7 @@ public class App {
         }
     }
 
-    private static void removerPalavra() throws IOException {
+    private static void removerPalavra(Dicionario dicionario) throws IOException {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Digite a palavra que deseja remover: ");
         String palavra = scanner.nextLine();
