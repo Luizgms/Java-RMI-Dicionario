@@ -1,0 +1,12 @@
+java -Djava.security.policy=rmi.policy Cliente
+
+pause@echo off
+copy rmi.policy bin
+copy *.bat bin
+@echo off
+rmiregistry
+
+@echo off
+
+java -Djava.security.policy=rmi.policy Servidor
+

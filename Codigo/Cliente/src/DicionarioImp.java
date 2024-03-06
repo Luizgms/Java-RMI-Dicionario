@@ -11,6 +11,7 @@ public class DicionarioImp extends java.rmi.server.UnicastRemoteObject implement
     private static Map<String, String> dicionario;
 
     public DicionarioImp() throws IOException,java.rmi.RemoteException {
+        super();
         dicionario = new HashMap<>();
         carregarDicionario();
     }
